@@ -35,10 +35,11 @@
         <datasource-micrometer.version>2.0.1</datasource-micrometer.version>
         <error-prone.version>2.43.0</error-prone.version>
 
-        <!-- Security: override versions managed by Spring Boot BOM to pull in patched releases.
-             netty.version and jackson-bom.version are recognised properties in spring-boot-dependencies. -->
+        <!-- Security: netty.version is a recognised Spring Boot BOM property that cascades
+             to all io.netty:* managed artifacts. jackson-bom.version is NOT set here because
+             in Spring Boot 4 it controls tools.jackson:jackson-bom (Jackson 3.x), not the
+             com.fasterxml.jackson family — those are overridden directly in dependencyManagement. -->
         <netty.version>4.2.15.Final</netty.version>
-        <jackson-bom.version>2.21.4</jackson-bom.version>
 
         <docker.image.prefix>springcommunity</docker.image.prefix>
         <docker.image.exposed.port>9090</docker.image.exposed.port>
@@ -89,6 +90,14 @@
                 <artifactId>error_prone_annotations</artifactId>
                 <version>${error-prone.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <!-- Security: com.fasterxml.jackson (Jackson 2.x) — explicit artifact override
+                 because Spring Boot 4's jackson-bom.version property targets the 3.x BOM.
+                 CVE-2026-54512, CVE-2026-54513. -->
+            <dependency>
+                <groupId>com.fasterxml.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>2.21.4</version>
             </dependency>
             <!-- Security: tools.jackson.core is the Jackson 3.x group used by Spring Boot 4.
                  jackson-bom.version above covers com.fasterxml.jackson (2.x); these entries
