@@ -35,11 +35,10 @@
         <datasource-micrometer.version>2.0.1</datasource-micrometer.version>
         <error-prone.version>2.43.0</error-prone.version>
 
-        <!-- Security: netty.version is a recognised Spring Boot BOM property that cascades
-             to all io.netty:* managed artifacts. jackson-bom.version is NOT set here because
-             in Spring Boot 4 it controls tools.jackson:jackson-bom (Jackson 3.x), not the
-             com.fasterxml.jackson family — those are overridden directly in dependencyManagement. -->
+        <!-- Security: recognised Spring Boot BOM properties that cascade to all managed
+             artifacts of the respective library families. -->
         <netty.version>4.2.15.Final</netty.version>
+        <tomcat.version>11.0.22</tomcat.version>
 
         <docker.image.prefix>springcommunity</docker.image.prefix>
         <docker.image.exposed.port>9090</docker.image.exposed.port>
@@ -56,6 +55,13 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Security: explicit entry overrides the version brought in by spring-cloud-dependencies BOM.
+                 CVE-2026-40982 (CRITICAL), CVE-2026-22739, CVE-2026-40981, CVE-2026-41002 (HIGH). -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-config-server</artifactId>
+                <version>5.0.3</version>
+            </dependency>
             <dependency>
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-dependencies</artifactId>
