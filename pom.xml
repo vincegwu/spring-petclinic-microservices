@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>4.0.1</version>
+        <version>4.0.6</version>
     </parent>
 
     <groupId>org.springframework.samples</groupId>
@@ -34,6 +34,11 @@
         <jolokia-core.version>1.7.1</jolokia-core.version>
         <datasource-micrometer.version>2.0.1</datasource-micrometer.version>
         <error-prone.version>2.43.0</error-prone.version>
+
+        <!-- Security: override versions managed by Spring Boot BOM to pull in patched releases.
+             netty.version and jackson-bom.version are recognised properties in spring-boot-dependencies. -->
+        <netty.version>4.2.15.Final</netty.version>
+        <jackson-bom.version>2.21.4</jackson-bom.version>
 
         <docker.image.prefix>springcommunity</docker.image.prefix>
         <docker.image.exposed.port>9090</docker.image.exposed.port>
@@ -84,6 +89,21 @@
                 <artifactId>error_prone_annotations</artifactId>
                 <version>${error-prone.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <!-- Security: tools.jackson.core is the Jackson 3.x group used by Spring Boot 4.
+                 jackson-bom.version above covers com.fasterxml.jackson (2.x); these entries
+                 cover the tools.jackson.* namespace which Spring Boot does not expose a
+                 single override property for. CVE-2026-29062, GHSA-2m67-wjpj-xhg9,
+                 CVE-2026-54512, CVE-2026-54513. -->
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-core</artifactId>
+                <version>3.1.4</version>
+            </dependency>
+            <dependency>
+                <groupId>tools.jackson.core</groupId>
+                <artifactId>jackson-databind</artifactId>
+                <version>3.1.4</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
