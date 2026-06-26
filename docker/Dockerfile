@@ -1,11 +1,11 @@
-FROM eclipse-temurin:17 AS builder
+FROM eclipse-temurin:17-jre-alpine AS builder
 WORKDIR application
 ARG ARTIFACT_NAME
 COPY ${ARTIFACT_NAME}.jar application.jar
 RUN java -Djarmode=layertools -jar application.jar extract
 
 
-FROM eclipse-temurin:17
+FROM eclipse-temurin:17-jre-alpine
 WORKDIR application
 
 ARG EXPOSED_PORT
@@ -25,4 +25,12 @@ RUN true
 COPY --from=builder application/snapshot-dependencies/ ./
 RUN true
 COPY --from=builder application/application/ ./
+
+# Alpine uses addgroup/adduser (busybox), not groupadd/useradd (shadow-utils)
+RUN addgroup -S -g 1000 appgroup \
+    && adduser -S -u 1000 -G appgroup -H appuser \
+    && chown -R appuser:appgroup /application
+
+USER 1000:1000
+
 ENTRYPOINT ["java", "org.springframework.boot.loader.launch.JarLauncher"]

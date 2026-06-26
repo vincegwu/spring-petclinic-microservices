@@ -24,8 +24,7 @@
         <!-- Spring Boot -->
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
-            <artifactId>spring-ai-starter-model-openai</artifactId>
-			<!-- artifactId>spring-ai-starter-model-azure-openai</artifactId-->
+            <artifactId>spring-ai-starter-model-azure-openai</artifactId>
 		</dependency>
         <dependency>
             <groupId>org.springframework.ai</groupId>
@@ -135,6 +134,20 @@
 
   <dependencyManagement>
   	<dependencies>
+		<!--
+		  Explicit entry BEFORE the spring-ai-bom import so it wins if spring-ai-bom
+		  also manages this artifact. error_prone_annotations is a compile-time-only
+		  annotations library (RetentionPolicy.CLASS); marking it provided keeps it
+		  off the runtime classpath and out of BOOT-INF/lib, eliminating the Trivy
+		  HIGH/CRITICAL findings on the container image.
+		  version property is defined in the parent pom.
+		-->
+		<dependency>
+			<groupId>com.google.errorprone</groupId>
+			<artifactId>error_prone_annotations</artifactId>
+			<version>${error-prone.version}</version>
+			<scope>provided</scope>
+		</dependency>
 		<dependency>
 			<groupId>org.springframework.ai</groupId>
 			<artifactId>spring-ai-bom</artifactId>

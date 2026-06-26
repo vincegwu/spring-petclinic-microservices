@@ -33,6 +33,7 @@
         <chaos-monkey-spring-boot.version>3.1.0</chaos-monkey-spring-boot.version>
         <jolokia-core.version>1.7.1</jolokia-core.version>
         <datasource-micrometer.version>2.0.1</datasource-micrometer.version>
+        <error-prone.version>2.43.0</error-prone.version>
 
         <docker.image.prefix>springcommunity</docker.image.prefix>
         <docker.image.exposed.port>9090</docker.image.exposed.port>
@@ -70,6 +71,19 @@
                 <groupId>net.ttddyy.observation</groupId>
                 <artifactId>datasource-micrometer-spring-boot</artifactId>
                 <version>${datasource-micrometer.version}</version>
+            </dependency>
+            <!--
+              error_prone_annotations is a compile-time-only annotations library pulled in
+              transitively by gRPC (via spring-ai-starter-model-azure-openai). Marking it
+              provided prevents Spring Boot from packaging it into BOOT-INF/lib, which
+              eliminates the Trivy HIGH/CRITICAL findings on the container image.
+              The annotations use RetentionPolicy.CLASS so they are not needed at runtime.
+            -->
+            <dependency>
+                <groupId>com.google.errorprone</groupId>
+                <artifactId>error_prone_annotations</artifactId>
+                <version>${error-prone.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
