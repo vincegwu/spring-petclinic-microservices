@@ -120,6 +120,15 @@
                 <artifactId>jackson-databind</artifactId>
                 <version>3.1.4</version>
             </dependency>
+            <!-- Security: org.bouncycastle:bcprov-jdk18on — explicit override because the
+                 version brought in transitively (via spring-security-crypto) is vulnerable.
+                 CVE-2025-14813 (CRITICAL, CVSS 9.3): broken/risky cipher in G3413CTRBlockCipher,
+                 affects 1.81 before 1.81.1. -->
+            <dependency>
+                <groupId>org.bouncycastle</groupId>
+                <artifactId>bcprov-jdk18on</artifactId>
+                <version>1.81.1</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
